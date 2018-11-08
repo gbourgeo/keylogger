@@ -53,7 +53,7 @@ static int			get_bind(int fd, unsigned char index, unsigned char table)
 	return ke.kb_value;
 }
 
-int 				**get_keys(int fd, int nb_keys, int nb_keymap, int keymaps[2][256])
+int 				**get_keys(int fd, int nb_keys, int nb_keymap, int **keymaps)
 {
 	int				**key_table;
 

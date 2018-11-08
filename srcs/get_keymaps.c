@@ -16,11 +16,9 @@
 #include <errno.h>
 #include <stdio.h>
 
-#ifndef MAX_NR_KEYMAPS
-# define MAX_NR_KEYMAPS NR_KEYMAPS
-#endif
+#include "main.h"
 
-int					get_keymaps(int fd, int *keymaps[256])
+int					get_keymaps(int fd, int **keymaps)
 {
 	int 			keymapnbr;
 	struct kbentry	ke;

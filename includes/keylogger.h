@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.h                                             :+:      :+:    :+:   */
+/*   keylogger.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: root </var/mail/root>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,19 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MAIN_H
-# define MAIN_H
+#ifndef KEYLOGGER_H
+# define KEYLOGGER_H
 
-# include <linux/keyboard.h>
+#include <linux/input.h>
+#include <linux/keyboard.h>
 
-# ifndef MAX_NR_KEYMAPS
-#  define MAX_NR_KEYMAPS NR_KEYMAPS
-# endif
+typedef struct 	s_modifiers
+{
+	int 		value;
+	int 		bit;
+	char 		*name;
+}				t_modifiers;
 
-int				get_console();
-int				get_keymaps(int, int **);
-int				**get_keys(int, int, int, int **);
-char			*get_keyboard();
-void			keylogger(int keybd, int **key_table);
+static t_modifiers		modifiers[] = {
+	{ 0, 				KG_SHIFT,		"shift"},
+	{ KEY_RIGHTALT, 	KG_ALTGR,		"altgr"},
+	{ 0, 				KG_CTRL,		"control"},
+	{ KEY_LEFTALT, 		KG_ALT,			"alt"},
+	{ KEY_LEFTSHIFT, 	KG_SHIFTL,		"shiftl"},
+	{ KEY_RIGHTSHIFT, 	KG_SHIFTR,		"shiftr"},
+	{ KEY_LEFTCTRL, 	KG_CTRLL,		"ctrll"},
+	{ KEY_RIGHTCTRL, 	KG_CTRLR,		"ctrlr"}
+};
+
+static int				loop = 1;
 
 #endif
