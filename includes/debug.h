@@ -17,12 +17,32 @@ t_event	event[] = {
 	{ EV_ABS, 				"EV_ABS" },
 	{ EV_MSC, 				"EV_MSC" },
 	{ EV_SW,				"EV_SW" },
+	{ 0x06,					"UNDEFINED" },
+	{ 0x07,					"UNDEFINED" },
+	{ 0x08,					"UNDEFINED" },
+	{ 0x09,					"UNDEFINED" },
+	{ 0x0a,					"UNDEFINED" },
+	{ 0x0b,					"UNDEFINED" },
+	{ 0x0c,					"UNDEFINED" },
+	{ 0x0d,					"UNDEFINED" },
+	{ 0x0e,					"UNDEFINED" },
+	{ 0x0f,					"UNDEFINED" },
+	{ 0x10,					"UNDEFINED" },
 	{ EV_LED,				"EV_LED" },
 	{ EV_SND, 				"EV_SND" },
+	{ 0x13,					"UNDEFINED" },
 	{ EV_REP, 				"EV_REP" },
 	{ EV_FF, 				"EV_FF" },
 	{ EV_PWR, 				"EV_PWR" },
-	{ EV_FF_STATUS, 		"EV_FF_STATUS" }
+	{ EV_FF_STATUS, 		"EV_FF_STATUS" },
+	{ 0x18,					"UNDEFINED" },
+	{ 0x19,					"UNDEFINED" },
+	{ 0x1a,					"UNDEFINED" },
+	{ 0x1b,					"UNDEFINED" },
+	{ 0x1c,					"UNDEFINED" },
+	{ 0x1d,					"UNDEFINED" },
+	{ 0x1e,					"UNDEFINED" },
+	{ EV_MAX,				"EV_MAX" }
 };
 
 t_event msc[] = {
@@ -31,7 +51,9 @@ t_event msc[] = {
 	{ MSC_GESTURE,			"MSC_GESTURE" },
 	{ MSC_RAW,				"MSC_RAW" },
 	{ MSC_SCAN,				"MSC_SCAN" },
-	{ MSC_TIMESTAMP,		"MSC_TIMESTAMP" }
+	{ MSC_TIMESTAMP,		"MSC_TIMESTAMP" },
+	{ 0x06,					"UNDEFINED" },
+	{ MSC_MAX,				"MSC_MAX" }
 };
 
 t_event led[] = {
@@ -45,7 +67,12 @@ t_event led[] = {
 	{ LED_MUTE, 			"LED_MUTE" },
 	{ LED_MISC, 			"LED_MISC" },
 	{ LED_MAIL, 			"LED_MAIL" },
-	{ LED_CHARGING, 		"LED_CHARGING" }
+	{ LED_CHARGING, 		"LED_CHARGING" },
+	{ 0x0b,					"UNDEFINED" },
+	{ 0x0c,					"UNDEFINED" },
+	{ 0x0d,					"UNDEFINED" },
+	{ 0x0e,					"UNDEFINED" },
+	{ LED_MAX,				"LED_MAX" },
 };
 
 t_event key[] = {

