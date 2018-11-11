@@ -20,6 +20,7 @@
 #include <linux/kd.h>
 #include <errno.h>
 #include <string.h>
+#include <X11/XKBlib.h>
 
 #include "main.h"
 
@@ -68,30 +69,21 @@ static int			has_keys(int fd, int n)
 	return !ioctl(fd, KDGKBENT, (unsigned long)&ke);
 }
 
-static void			get_keystate(int fd, int *caps, int *num)
+static int			get_keystate(int *caps, int *num)
 {
-	long int		state;
+  Display 			*display;
+  char				*monitor;
+  unsigned 			state;
 
-	state = 0;
-	if (ioctl(fd, KDGKBLED, &state)) {
-		fprintf(stderr, "Can't get keys state: %s\n", strerror(errno));
-		return ;
-	}
-	printf("state: %ld", state);
-	for (int i = 0; i < 16; i++)
-		printf("%lx", state & i);
-	printf("\n");
-	printf("\tSCROLLLOCK %s", ((state << 3) & K_SCROLLLOCK) ? "ON":"OFF");
-	printf("\tNUMLOCK %s", ((state << 3) & K_NUMLOCK) ? "ON":"OFF");
-	printf("\tCAPSLOCK %s\n", ((state << 3) & K_CAPSLOCK) ? "ON":"OFF");
-	*caps = state  & K_CAPSLOCK;
-	*num = state & K_NUMLOCK;
-	state = 0;
-	ioctl(fd, KDGETLED, &state);
-	printf("state: %ld", state);
-	printf("\tSCROLLLED %s", (state & LED_SCR) ? "ON":"OFF");
-	printf("\tNUMLED %s", (state & LED_NUM) ? "ON":"OFF");
-	printf("\tCAPSLED %s\n", (state & LED_CAP) ? "ON":"OFF");
+	monitor = getenv("DISPLAY");
+	display = XOpenDisplay((monitor) ? monitor : ":0");
+	if (!display)
+		return printf("Can't get display to find Lockers states.\n");
+	if (XkbGetIndicatorState(display, XkbUseCoreKbd, &state) != Success)
+		return printf("Can't get indicator state for Lockers.\n");
+	*caps = state & 1;
+	*num = state & 2;
+	return (0);
 }
 
 int					main(void)
@@ -114,7 +106,7 @@ int					main(void)
 		return 1;
 	key_table = get_keys(fd, nb_keys, nb_keymap, key_maps);
 	free_tab(&key_maps);
-	get_keystate(fd, &capslock, &numlock);
+	get_keystate(&capslock, &numlock);
 	close(fd);
 	if (key_table == NULL)
 		return 1;

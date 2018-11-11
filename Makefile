@@ -21,6 +21,8 @@ OBJS	= $(addprefix $(OBJ_D), $(SRCS:.c=.o))
 
 INCS	= includes/
 
+LIBS	= -lX11
+
 FLAGS	= -Wall -Werror -Wextra
 
 all: $(OBJ_D) $(NAME)
@@ -29,7 +31,7 @@ $(OBJ_D):
 	@mkdir -p $@
 
 $(NAME): $(OBJS)
-	gcc -o $@ $^
+	gcc -o $@ $^ $(LIBS)
 
 $(OBJ_D)%.o: $(SRC_D)%.c
 	gcc -o $@ -c $< $(FLAGS) -I$(INCS)
