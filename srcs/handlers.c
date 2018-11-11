@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   keylogger.h                                        :+:      :+:    :+:   */
+/*   handlers.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: root </var/mail/root>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,14 +10,30 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef KEYLOGGER_H
-# define KEYLOGGER_H
+#include "keylogger.h"
 
-#include <linux/input.h>
-#include <linux/keyboard.h>
+int             shift_handler(int value, int state, int *modifier, int *capslock)
+{
+	if (state == 2)
+		return 0;
+	if (*capslock && (value == KEY_LEFTSHIFT || value == KEY_RIGHTSHIFT))
+		state = !state;
+	if (state == 0)
+		*modifier -= (1 << value);
+	else if (state == 1)
+		*modifier += (1 << value);
+	return 0;
+}
 
-int			shift_handler(int value, int state, int *modifier, int *capslock);
-int			lock_handler(int value, int state, int *modifier, int *capslock);
-
-
-#endif
+int			lock_handler(int value, int state, int *modifier, int *capslock)
+{
+	if (state != 1)
+		return 0;
+	if (value == 6)
+		*capslock = !(*capslock);
+	if (*capslock == 0)
+		*modifier -= (1 << KG_SHIFT);
+	else
+		*modifier += (1 << KG_SHIFT);
+	return 0;
+}

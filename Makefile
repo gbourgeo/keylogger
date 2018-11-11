@@ -14,7 +14,7 @@ NAME	= key
 
 SRC_D	= srcs/
 SRCS	= main.c get_console.c get_keymaps.c get_keys.c get_keyboard.c
-SRCS	+= keylogger.c
+SRCS	+= keylogger.c handlers.c
 
 OBJ_D	= objs/
 OBJS	= $(addprefix $(OBJ_D), $(SRCS:.c=.o))
