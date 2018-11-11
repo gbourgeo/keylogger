@@ -1,5 +1,5 @@
 # keylogger
-Keylogger in C
+Keylogger written in C
 
 ## Dependencies
 ```
