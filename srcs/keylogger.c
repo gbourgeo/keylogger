@@ -43,7 +43,7 @@ static int  		print_keysym(int *key, int state, int *lockers)
 		if (type == KT_SHIFT)
 			return shift_handler(value, state, &modifier);
 		if (type == KT_LOCK)
-			lock_handler(value, state, &modifier, lockers);
+			return lock_handler(value, state, &modifier, lockers);
 		if (state)
 			return printf("%s", syms[type].table[value]);
 	}
