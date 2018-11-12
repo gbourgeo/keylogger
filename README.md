@@ -1,5 +1,5 @@
-# keylogger
-Keylogger written in C
+# KEYLOGGER
+Advanced Keylogger written in C
 
 ## Keyboard supported
 > US keyboard ![keyboard](https://github.com/gbourgeo/keylogger/blob/master/img/USkeyboard.jpeg)
