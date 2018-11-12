@@ -16,7 +16,8 @@
 #include <linux/input.h>
 #include <linux/keyboard.h>
 
-int			shift_handler(int value, int state, int *modifier, int *capslock);
-int			lock_handler(int value, int state, int *modifier, int *capslock);
+int			get_keystate(int keybit);
+int			shift_handler(int value, int state, int *modifier);
+int			lock_handler(int value, int state, int *modifier, int *locker);
 
 #endif
