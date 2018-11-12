@@ -60,7 +60,7 @@ int					main(void)
 	int				fd;
 	int				nb_keys;
 	int				**key_maps;
-	int 			nb_keymap;
+	int				nb_keymap;
 	int				**key_table;
 	char			*keyboard;
 
