@@ -28,8 +28,9 @@ The keylogger will print on STDOUT all the keys pressed or the result of the mod
 - Pressing "Control" then "c" => Control_c
 
 ## Dependencies
+- The X11 library
 ```
 apt install libx11-dev
 ```
 ## Author
-Gilles Bourgeois
+- Gilles Bourgeois
