@@ -625,11 +625,11 @@ static const char *pad_syms[] = {
 /* Keysyms whose KTYP is KT_DEAD. */
 static const char *dead_syms[] = {
 	"`",
-	"dead_acute",
+	"´",
 	"^",
-	"dead_tilde",
+	"˜",
 	"¨",
-	"dead_cedilla"
+	"¸"
 };
 
 /* Keysyms whose KTYP is KT_CONS. */
