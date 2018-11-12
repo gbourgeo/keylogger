@@ -7,9 +7,7 @@
 
 #include "keylogger.h"
 #include "keys.h"
-#include "debug.h"
-#include <errno.h>
-#include <string.h>
+//#include "debug.h"
 
 static int			loop;
 
