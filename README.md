@@ -32,4 +32,4 @@ The keylogger will print on STDOUT all the keys pressed or the result of the mod
 apt install libx11-dev
 ```
 ## Author
-gilles bourgeois
+Gilles Bourgeois
