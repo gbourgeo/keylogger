@@ -25,6 +25,7 @@ This keylogger does not handle:
 The keylogger will print on STDOUT all the keys pressed or the result of the modifiers:
 - Pressing "a"              => a,
 - Pressing "Shift" then "a" => A  ( not \<Shift\>+a )
+- Pressing "Control" then "c" => Control_c
 
 ## Dependencies
 ```
