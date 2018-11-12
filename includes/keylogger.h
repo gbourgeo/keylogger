@@ -19,5 +19,4 @@
 int			shift_handler(int value, int state, int *modifier, int *capslock);
 int			lock_handler(int value, int state, int *modifier, int *capslock);
 
-
 #endif
