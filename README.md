@@ -2,8 +2,8 @@
 Advanced Keylogger written in C
 
 ## Keyboard supported
-> US keyboard ![keyboard](https://github.com/gbourgeo/keylogger/blob/master/img/USkeyboard.jpeg)
-> FR keyboard ![keyboard](https://github.com/gbourgeo/keylogger/blob/master/img/FRkeyboard.png)
+> US keyboard ![keyboard](/img/USkeyboard.jpeg)
+> FR keyboard ![keyboard](/img/FRkeyboard.png)
 
 ## Specificities
 - This keylogger detect and handle:
