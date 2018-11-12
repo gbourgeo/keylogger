@@ -6,13 +6,13 @@ Keylogger written in C
 > FR keyboard ![keyboard](https://github.com/gbourgeo/keylogger/blob/master/img/FRkeyboard.png)
 
 ## Specificities
-- This keylogger handles:
+- This keylogger detect and handle:
   - [x] All normal keys (a, z, e, r, etc.)
   - [x] All modifiers keys (Shift, Control, Alt, AltGr, etc.)
   - [x] The CapsLock key
   - [x] All Keypad keys
 
-- This keylogger does not handle:
+- This keylogger detect but do not handle:
   - [ ] Scroll Lock
   - [ ] Num Lock (it gets the keypad buttons like the num lock is always ON)
 
