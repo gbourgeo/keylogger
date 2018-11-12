@@ -752,14 +752,14 @@ static const char *ascii_syms[] = {
 
 /* Keysyms whose KTYP is KT_LOCK. */
 static const char *lock_syms[] = {
-	"<Shift_Lock>",
-	"<AltGr_Lock>",
-	"<Control_Lock>",
-	"<Alt_Lock>",
-	"<ShiftL_Lock>",
-	"<ShiftR_Lock>",
-	"<CtrlL_Lock>",
-	"<CtrlR_Lock>"
+	"Shift_Lock",
+	"AltGr_Lock",
+	"Control_Lock",
+	"Alt_Lock",
+	"ShiftL_Lock",
+	"ShiftR_Lock",
+	"CtrlL_Lock",
+	"CtrlR_Lock"
 };
 
 /* Keysyms whose KTYP is KT_SLOCK. */
