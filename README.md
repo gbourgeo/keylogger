@@ -2,8 +2,8 @@
 Advanced Keylogger written in C
 
 ## Keyboard supported
-> US keyboard ![keyboard](/img/apple-keyboard-american.jpg)
-> FR keyboard ![keyboard](/img/apple-keyboard-french.jpg)
+> US keyboard ![keyboard](/img/USKEYBORAD.jpg)
+> FR keyboard ![keyboard](/img/FRKAYBOARD.jpg)
 
 ## Specificities
 - This keylogger detect and handle:
