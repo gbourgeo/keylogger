@@ -17,7 +17,14 @@ static int			is_a_console(int fd)
 
 int					get_console()
 {
-	char			*console[] = { "/dev/tty", "/dev/tty0", "/dev/vc/0", "/dev/console" };
+	char			*console[] = {
+		"/proc/self/fd/0",
+		"/dev/tty",
+		"/dev/tty0",
+		"/dev/vc/0",
+		"/dev/systty",
+		"/dev/console"
+	};
 	int				fd;
 
 	fd = -1;
@@ -31,15 +38,18 @@ int					get_console()
 		if (fd < 0)
 			continue ;
 		if (is_a_console(fd))
-			break ;
+		{
+			fprintf(stdout, "Console: %s\n", console[i]);
+			return fd;
+		}
 		close(fd);
 		fd = -1;
 	}
 	if (fd < 0)
 		for (fd = 0; fd < 3; fd++)
 			if (is_a_console(fd))
-				break ;
-	if (fd < 0)
-		fprintf(stderr, "Can't get a file descriptor refering to a terminal\n");
-	return fd;
+				return fd;
+	fprintf(stderr, "Can't get a file descriptor refering to a terminal\n");
+	fprintf(stderr, "Are you r00t ?\n");
+	return -1;
 }

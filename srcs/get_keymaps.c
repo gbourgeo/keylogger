@@ -19,7 +19,7 @@ int					get_keymaps(int fd, int **keymaps)
 		int j = ioctl(fd, KDGKBENT, (unsigned long)&ke);
 		if (j && errno != EINVAL) {
 			perror("KDGKBENT");
-			fprintf(stderr, "KDBGENT error at index 0 in table %d\n", i);
+			fprintf(stderr, "KDGKBENT: error at index 0 in table %d\n", i);
 			return 0;
 		}
 		if (!j && ke.kb_value != K_NOSUCHMAP) {

